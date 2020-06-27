@@ -11,6 +11,6 @@ namespace FamilyTreeXML.Infrastructure
         XDocument Get(int familyId);
         int Delete(int familyId);
         List<XDocument> Browse();
-        XDocument AddChild(int familyId, Role role);
+        int AddChild(int familyId, Person child);
     }
 }

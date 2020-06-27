@@ -94,5 +94,25 @@ namespace FamilyTreeXML.Infrastructure
 
             return rowsAffected;
         }
+
+        public int AddChild(int familyId, Person child)
+        {
+            var family = Get(familyId);
+
+            family = HelperClass.AddChild(family, child);
+
+            String query = $"UPDATE FamilyTreeX.dbo.FamilyTrees SET tree = '{family}' WHERE id = {familyId};";
+
+            int rowsAffected;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(query, connection);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
+        }
     }
 }
