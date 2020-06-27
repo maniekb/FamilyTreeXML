@@ -8,6 +8,8 @@ namespace FamilyTreeXML.Infrastructure
 {
     public interface IFamilyTreeService
     {
-        XDocument GetAsync();
+        XDocument Get(int familyId);
+        List<XDocument> Browse();
+        XDocument AddChild(int familyId, Role role);
     }
 }
