@@ -26,7 +26,7 @@ namespace FamilyTreeXML.Infrastructure
         {
             var ids = new List<int>();
             var trees = new List<XDocument>();
-            String query = $"SELECT id from FamilyTreeX.dbo.FamilyTrees;";
+            String query = $"SELECT id FROM FamilyTreeX.dbo.FamilyTrees;";
             XDocument xdoc;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
@@ -59,8 +59,8 @@ namespace FamilyTreeXML.Infrastructure
 
         public XDocument Get(int familyId)
         {
-            String query = $"SELECT tree from FamilyTreeX.dbo.FamilyTrees where id = {familyId};";
-            XDocument xdoc;
+            String query = $"SELECT tree FROM FamilyTreeX.dbo.FamilyTrees WHERE id = {familyId};";
+            XDocument xdoc = new XDocument();
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -68,11 +68,31 @@ namespace FamilyTreeXML.Infrastructure
                 SqlCommand cmd = new SqlCommand(query, connection);
                 XmlReader xr = cmd.ExecuteXmlReader();
 
-                xdoc = XDocument.Load(xr);
+                if(xr.MoveToContent() != XmlNodeType.None)
+                {
+                    xdoc = XDocument.Load(xr);
+                }
+                
                 xr.Close();
             }
 
             return xdoc;
+        }
+
+        public int Delete(int familyId)
+        {
+            String query = $"DELETE FROM FamilyTreeX.dbo.FamilyTrees WHERE id = {familyId};";
+            int rowsAffected;
+            XDocument xdoc;
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(query, connection);
+                rowsAffected = cmd.ExecuteNonQuery();
+            }
+
+            return rowsAffected;
         }
     }
 }

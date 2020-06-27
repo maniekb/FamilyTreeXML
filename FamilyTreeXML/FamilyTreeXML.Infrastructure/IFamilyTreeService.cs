@@ -9,6 +9,7 @@ namespace FamilyTreeXML.Infrastructure
     public interface IFamilyTreeService
     {
         XDocument Get(int familyId);
+        int Delete(int familyId);
         List<XDocument> Browse();
         XDocument AddChild(int familyId, Role role);
     }
