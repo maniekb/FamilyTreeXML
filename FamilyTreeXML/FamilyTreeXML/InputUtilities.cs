@@ -53,8 +53,8 @@ namespace FamilyTreeXML.App
         public static Family GetNewFamilyData(XDocument fatherFamily, XDocument motherFamily)
         {
             var family = new Family();
+
             // Get father
-            
             var sons = fatherFamily.Root.Element("Family").Elements("Son").ToList();
             Console.WriteLine($"Choose father(type number)");
 

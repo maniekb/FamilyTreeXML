@@ -30,6 +30,18 @@ namespace FamilyTreeXML.Infrastructure
             return trees;
         }
 
+        public void DeleteAll()
+        {
+            String query = $"DELETE FROM FamilyTreeX.dbo.FamilyTrees;";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         public List<int> GetFamilyIds()
         {
             var ids = new List<int>();

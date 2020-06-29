@@ -26,10 +26,11 @@ namespace FamilyTreeXML.App
                 Console.WriteLine("--- OPTIONS ---");
                 Console.WriteLine("1 - Browse all families");
                 Console.WriteLine("2 - Get family with id");
-                Console.WriteLine("3 - CreateFamily");
+                Console.WriteLine("3 - Create new family");
                 Console.WriteLine("4 - Add child to family");
-                Console.WriteLine("9 - Delete family with id");
-                
+                Console.WriteLine("8 - Delete family with id");
+                Console.WriteLine("9 - Delete all families");
+
                 choice = Console.ReadLine()[0];
                 Console.Clear();
 
@@ -87,6 +88,15 @@ namespace FamilyTreeXML.App
                         }
                         var child = InputUtilities.GetChildData();
                         FamilyTreeService.AddChild(id, child);
+                        break;
+                    case '8':
+                        Console.WriteLine("Insert id:");
+                        int id3 = Convert.ToInt32(Console.ReadLine());
+                        int rowsAffected = FamilyTreeService.Delete(id3);
+                        if (rowsAffected == 0)
+                        {
+                            Console.WriteLine("No tree with given id.");
+                        }
                         break;
                     case '9':
                         Console.WriteLine("Insert id:");
