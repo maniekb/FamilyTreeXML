@@ -26,7 +26,8 @@ namespace FamilyTreeXML.App
                 Console.WriteLine("--- OPTIONS ---");
                 Console.WriteLine("1 - Browse all families");
                 Console.WriteLine("2 - Get family with id");
-                Console.WriteLine("3 - Add child to family");
+                Console.WriteLine("3 - CreateFamily");
+                Console.WriteLine("4 - Add child to family");
                 Console.WriteLine("9 - Delete family with id");
                 
                 choice = Console.ReadLine()[0];
@@ -53,8 +54,37 @@ namespace FamilyTreeXML.App
                         Console.WriteLine(xdoc.ToString());                     
                         break;
                     case '3':
-                        Console.WriteLine("Insert family id:");
+                        var ids = FamilyTreeService.GetFamilyIds();
+                        Console.WriteLine("Insert father family id: ");
+                        var fatherFamilyId = Convert.ToInt32(Console.ReadLine());
+                        if (!ids.Contains(fatherFamilyId))
+                        {
+                            Console.WriteLine("No family with given id.");
+                            break;
+                        }
+                        Console.WriteLine("Insert mother family id: ");
+                        var motherFamilyId = Convert.ToInt32(Console.ReadLine());
+                        if(!ids.Contains(motherFamilyId))
+                        {
+                            Console.WriteLine("No family with given id.");
+                            break;
+                        }
+
+                        XDocument fatherFamily = FamilyTreeService.Get(fatherFamilyId);
+                        XDocument motherFamily = FamilyTreeService.Get(motherFamilyId);
+                        var newFamily = InputUtilities.GetNewFamilyData(fatherFamily, motherFamily);
+
+                        FamilyTreeService.AddFamily(newFamily);
+
+                        break;
+                    case '4':
+                        Console.WriteLine("Insert family id:");                
                         id = Convert.ToInt32(Console.ReadLine());
+                        if(!FamilyTreeService.GetFamilyIds().Contains(id))
+                        {
+                            Console.WriteLine("No family with given id.");
+                            break;
+                        }
                         var child = InputUtilities.GetChildData();
                         FamilyTreeService.AddChild(id, child);
                         break;

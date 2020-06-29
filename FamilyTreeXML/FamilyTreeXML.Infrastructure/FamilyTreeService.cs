@@ -17,17 +17,23 @@ namespace FamilyTreeXML.Infrastructure
             ConnectionString = connectionString;
         }
 
-        public XDocument AddChild(int familyId, Role role)
-        {
-            throw new NotImplementedException();
-        }
-
         public List<XDocument> Browse()
         {
-            var ids = new List<int>();
+            var ids = GetFamilyIds();
             var trees = new List<XDocument>();
+
+            foreach(var id in ids)
+            {
+                trees.Add(Get(id));
+            }
+
+            return trees;
+        }
+
+        public List<int> GetFamilyIds()
+        {
+            var ids = new List<int>();
             String query = $"SELECT id FROM FamilyTreeX.dbo.FamilyTrees;";
-            XDocument xdoc;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -49,12 +55,7 @@ namespace FamilyTreeXML.Infrastructure
                 reader.Close();
             }
 
-            foreach(var id in ids)
-            {
-                trees.Add(Get(id));
-            }
-
-            return trees;
+            return ids;
         }
 
         public XDocument Get(int familyId)
@@ -113,6 +114,23 @@ namespace FamilyTreeXML.Infrastructure
             }
 
             return rowsAffected;
+        }
+
+        public void AddFamily(Family newFamily)
+        {
+            var id = HelperClass.GetSmallestPossibleId(GetFamilyIds());
+            var family = HelperClass.CreateFamily(newFamily, id); 
+
+            var xdoc = new XDocument(new XElement("Tree", family.Root));
+
+            String query = $"INSERT INTO FamilyTreeX.dbo.FamilyTrees VALUES({id},'{xdoc.ToString()}');";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(query, connection);
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

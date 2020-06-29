@@ -12,5 +12,7 @@ namespace FamilyTreeXML.Infrastructure
         int Delete(int familyId);
         List<XDocument> Browse();
         int AddChild(int familyId, Person child);
+        List<int> GetFamilyIds();
+        void AddFamily(Family newFamily);
     }
 }

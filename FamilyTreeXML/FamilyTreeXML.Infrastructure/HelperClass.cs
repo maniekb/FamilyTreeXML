@@ -8,13 +8,19 @@ namespace FamilyTreeXML.Infrastructure
 {
     public static class HelperClass
     {
-        public static XDocument CreateFamily(int fatherFamilyId, int motherFamilyId, Person mother, Person fater)
-        {
-            var xdoc = new XDocument();
+        public static XDocument CreateFamily(Family familyData, int id)
+        { 
 
+            familyData.Father.Name = "Father";
+            familyData.Mother.Name = "Mother";
 
+            var newFamily = new XElement("Family", familyData.Father, familyData.Mother);
 
-            return xdoc;
+            newFamily.SetAttributeValue("Id", id);
+            newFamily.SetAttributeValue("fatherFamilyId", familyData.FatherFamilyId);
+            newFamily.SetAttributeValue("motherFamilyId", familyData.MotherFamilyId);
+
+            return new XDocument(newFamily);
         }
 
         public static XDocument AddChild(XDocument family, Person child)
@@ -33,5 +39,13 @@ namespace FamilyTreeXML.Infrastructure
 
             return family;
         }
+
+        public static int GetSmallestPossibleId(List<int> ids)
+            => (
+                from n in ids
+                where !ids.Select(nu => nu).Contains(n + 1)
+                orderby n
+                select n + 1
+            ).First();
     }
 }
