@@ -91,7 +91,6 @@ namespace FamilyTreeXML.Infrastructure
         {
             String query = $"DELETE FROM FamilyTreeX.dbo.FamilyTrees WHERE id = {familyId};";
             int rowsAffected;
-            XDocument xdoc;
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {

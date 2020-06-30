@@ -9,7 +9,6 @@ namespace FamilyTreeXML.App
     {
         public static Person GetPersonData(Role role)
         {
-            char choice;
             string firstname;
             string lastname;
             DateTime birthDate;

@@ -23,17 +23,17 @@ namespace FamilyTreeXML.App
             while(true)
             {
                 Console.WriteLine(@"
-                   FamilyTreeXML
-                ----- OPTIONS -----
-                1 - Browse all families
-                2 - Get family with id
-                3 - Create new family
-                4 - Add child to family
-                5 - Get number of kids in every family
-                6 - Get person birth date
-                7 - Delete family with id
-                8 - Delete all families
-                q - QUIT
+    FamilyTreeXML
+----- OPTIONS -----
+1 - Browse all families
+2 - Get family with id
+3 - Create new family
+4 - Add child to family
+5 - Get number of kids in every family
+6 - Get person birth date
+7 - Delete family with id
+8 - Delete all families
+Q - QUIT
                 ");
 
                 choice = Console.ReadLine()[0];
@@ -95,6 +95,11 @@ namespace FamilyTreeXML.App
                             fatherFamily = FamilyTreeService.Get(fatherFamilyId);
                             newFamily.Father = InputUtilities.GetParentDataFromXDoc(fatherFamily, Role.Father);
                         }
+                        else
+                        {
+                            Console.WriteLine("Wrong input.");
+                            break;
+                        }
 
                         Console.WriteLine("Is mother family arleady in DB? (Y/N)");
                         choice = Console.ReadLine()[0];
@@ -117,8 +122,13 @@ namespace FamilyTreeXML.App
                             motherFamily = FamilyTreeService.Get(motherFamilyId);
                             newFamily.Mother = InputUtilities.GetParentDataFromXDoc(motherFamily, Role.Mother);
                         }
+                        else
+                        {
+                            Console.WriteLine("Wrong input.");
+                            break;
+                        }
 
-                        
+
                         FamilyTreeService.AddFamily(newFamily);
 
                         break;
@@ -177,6 +187,9 @@ namespace FamilyTreeXML.App
                         break;
                     case '8':
                         FamilyTreeService.DeleteAll();
+                        break;
+                    case 'q':
+                        Environment.Exit(0);
                         break;
 
                 }
