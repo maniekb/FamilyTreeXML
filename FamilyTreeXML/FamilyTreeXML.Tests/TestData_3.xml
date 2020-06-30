@@ -2,20 +2,14 @@
 <Tree>
   <Family Id="3" fatherFamilyId="1" motherFamilyId="2">
     <Father>
-      <Firstame>Lebron</Firstame>
+      <Firstname>Lebron</Firstname>
       <Lastname>James</Lastname>
       <BirthDate>1980-01-21</BirthDate>
     </Father>
     <Mother>
-      <Firstame>Savannah</Firstame>
+      <Firstname>Savannah</Firstname>
       <Lastname>James</Lastname>
-      <Maidenname>Bryant</Maidenname>
       <BirthDate>1982-09-12</BirthDate>
     </Mother>
-    <Son>
-      <Firstame>Bronny</Firstame>
-      <Lastname>James</Lastname>
-      <BirthDate>2001-05-03</BirthDate>
-    </Son>
   </Family>
 </Tree>

@@ -1,8 +1,7 @@
 ﻿using FamilyTreeXML.Infrastructure;
-using System.Configuration;
 using System;
-using System.Xml.Linq;
 using System.Linq;
+using System.Xml.Linq;
 
 namespace FamilyTreeXML.App
 {
@@ -23,14 +22,19 @@ namespace FamilyTreeXML.App
 
             while(true)
             {
-                Console.WriteLine("FamilyTreeXML");
-                Console.WriteLine("--- OPTIONS ---");
-                Console.WriteLine("1 - Browse all families");
-                Console.WriteLine("2 - Get family with id");
-                Console.WriteLine("3 - Create new family");
-                Console.WriteLine("4 - Add child to family");
-                Console.WriteLine("8 - Delete family with id");
-                Console.WriteLine("9 - Delete all families");
+                Console.WriteLine(@"
+                   FamilyTreeXML
+                ----- OPTIONS -----
+                1 - Browse all families
+                2 - Get family with id
+                3 - Create new family
+                4 - Add child to family
+                5 - Get number of kids in every family
+                6 - Get person birth date
+                7 - Delete family with id
+                8 - Delete all families
+                q - QUIT
+                ");
 
                 choice = Console.ReadLine()[0];
                 Console.Clear();
@@ -138,7 +142,31 @@ namespace FamilyTreeXML.App
                         var child = InputUtilities.GetPersonData(role);
                         FamilyTreeService.AddChild(id, child);
                         break;
-                    case '8':
+                    case '5':
+                        var data = FamilyTreeService.ChildInEveryFamilyCount();
+                        foreach(var row in data)
+                        {
+                            Console.WriteLine($"Family with id {row.Item1}: {row.Item2}");
+                        }
+                        break;
+                    case '6':
+                        Console.WriteLine("Firstame: ");
+                        var firstname = Console.ReadLine();
+                        Console.WriteLine("Lastname: ");
+                        var lastname = Console.ReadLine();
+
+                        string birthdate = FamilyTreeService.GetPersonBirthDate(firstname, lastname);
+                        if(!String.IsNullOrEmpty(birthdate))
+                        {
+                            Console.WriteLine($"{firstname} {lastname}'s birthdate is: {birthdate} ");
+                        }
+                        else
+                        {
+                            Console.WriteLine("No person found.");
+                        }
+
+                        break;
+                    case '7':
                         Console.WriteLine("Insert id:");
                         int id3 = Convert.ToInt32(Console.ReadLine());
                         int rowsAffected = FamilyTreeService.Delete(id3);
@@ -147,13 +175,12 @@ namespace FamilyTreeXML.App
                             Console.WriteLine("No tree with given id.");
                         }
                         break;
-                    case '9':
+                    case '8':
                         FamilyTreeService.DeleteAll();
                         break;
 
                 }
             }
-            
         }
     }
 }

@@ -63,6 +63,7 @@ namespace FamilyTreeXML.Tests
         {
             //var family = LoadFamilyFromFile("TestData_1.xml");
             var family = LoadFamilyFromFile(file);
+            FamilyTreeService.DeleteAll();
 
             FamilyTreeService.AddFamily(family);
             var expected = FamilyTreeService.Get(0);
@@ -76,12 +77,72 @@ namespace FamilyTreeXML.Tests
         {
             //var family = LoadFamilyFromFile("TestData_1.xml");
             var family = LoadFamilyFromFile(file);
+            FamilyTreeService.DeleteAll();
 
             FamilyTreeService.AddFamily(family);
             var expected = FamilyTreeService.Browse();
 
-
             Assert.Equal(HelperClass.CreateFamily(family, 0).ToString(), expected[0].ToString());
+        }
+
+        [Theory]
+        [InlineData(Role.Daughter)]
+        [InlineData(Role.Son)]
+        public void adding_child_to_family_should_add_child_to_family_in_db(Role role)
+        {
+            var family = LoadFamilyFromFile("C:\\Users\\Maciek\\Desktop\\.NET\\FamilyTreeXML\\FamilyTreeXML\\FamilyTreeXML.Tests\\TestData_3.xml");
+            //var family = LoadFamilyFromFile("TestData_1.xml");
+            FamilyTreeService.DeleteAll();
+
+            var child = new Person
+            {
+                Role = role,
+                Firstname = "firstname",
+                Lastname = "lastname"
+            };
+
+            FamilyTreeService.AddFamily(family);
+            FamilyTreeService.AddChild(0, child);
+
+            var xdoc = FamilyTreeService.Get(0);
+            var smth = $"{role}";
+            var assertion = xdoc.Elements($"{role}").Any();
+
+            Assert.True(xdoc.Descendants().Elements($"{role.ToString()}").Any());
+        }
+
+        [Fact]
+        public void delete_should_remove_family_with_given_id_from_db()
+        {
+            FamilyTreeService.DeleteAll();
+            //var family = LoadFamilyFromFile("TestData_1.xml");
+            var family = LoadFamilyFromFile(file);
+
+            FamilyTreeService.AddFamily(family);
+
+            FamilyTreeService.Delete(0);
+
+            var xdoc = FamilyTreeService.Get(0);
+
+            Assert.True(xdoc.Root == null);
+        }
+
+
+        [Fact]
+        public void delete_all_should_remove_all_families_from_db()
+        {
+            FamilyTreeService.DeleteAll();
+            //var family = LoadFamilyFromFile("TestData_1.xml");
+            var family = LoadFamilyFromFile(file);
+
+            FamilyTreeService.AddFamily(family);
+            FamilyTreeService.AddFamily(family);
+
+            FamilyTreeService.DeleteAll();
+
+            var xdocs = FamilyTreeService.Browse();
+
+            Assert.True(!xdocs.Any());
         }
 
         public Family LoadFamilyFromFile(string file)

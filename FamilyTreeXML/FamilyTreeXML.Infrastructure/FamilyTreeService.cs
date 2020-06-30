@@ -137,5 +137,53 @@ namespace FamilyTreeXML.Infrastructure
                 cmd.ExecuteNonQuery();
             }
         }
+
+        public List<Tuple<int, int>> ChildInEveryFamilyCount()
+        {
+            var data = new List<Tuple<int,int>>();
+            String query = $"SELECT * from TotalChildInEveryFamily();";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(query, connection);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        data.Add(new Tuple<int,int>(reader.GetInt32(0),reader.GetInt32(1)));
+                    }
+                }
+
+                reader.Close();
+            }
+
+            return data;
+        }
+
+        public string GetPersonBirthDate(string firstname, string lastname)
+        {
+            string birthDate = null;
+            String query = $"SELECT * FROM GetPersonBirthDate ('{firstname}', '{lastname}');";
+
+            using (SqlConnection connection = new SqlConnection(ConnectionString))
+            {
+                connection.Open();
+                SqlCommand cmd = new SqlCommand(query, connection);
+                SqlDataReader reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    reader.Read();
+                    birthDate = reader.GetString(0);
+                }
+
+                reader.Close();
+            }
+
+            return birthDate;
+        }
     }
 }
