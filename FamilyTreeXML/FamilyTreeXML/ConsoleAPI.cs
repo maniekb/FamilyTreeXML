@@ -39,9 +39,16 @@ namespace FamilyTreeXML.App
                 {
                     case '1':
                         var trees = FamilyTreeService.Browse();
-                        foreach(var tree in trees)
+                        if(trees.Any())
                         {
-                            Console.WriteLine(tree.ToString());
+                            foreach (var tree in trees)
+                            {
+                                Console.WriteLine(tree.ToString());
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine("No trees in the database.");
                         }
                         break;
                     case '2':

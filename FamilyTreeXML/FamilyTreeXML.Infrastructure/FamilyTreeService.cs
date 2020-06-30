@@ -58,10 +58,7 @@ namespace FamilyTreeXML.Infrastructure
                         ids.Add(reader.GetInt32(0));
                     }
                 }
-                else
-                {
-                    Console.WriteLine("No trees in the database.");
-                }
+
                 reader.Close();
             }
 
