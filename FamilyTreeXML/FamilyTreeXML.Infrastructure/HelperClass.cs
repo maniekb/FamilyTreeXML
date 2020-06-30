@@ -20,7 +20,8 @@ namespace FamilyTreeXML.Infrastructure
             newFamily.SetAttributeValue("fatherFamilyId", familyData.FatherFamilyId);
             newFamily.SetAttributeValue("motherFamilyId", familyData.MotherFamilyId);
 
-            return new XDocument(newFamily);
+            var xdoc = new XDocument(newFamily);
+            return new XDocument(new XElement("Tree", xdoc.Root));
         }
 
         public static XDocument AddChild(XDocument family, Person child)
@@ -46,6 +47,6 @@ namespace FamilyTreeXML.Infrastructure
                 where !ids.Select(nu => nu).Contains(n + 1)
                 orderby n
                 select n + 1
-            ).First();
+            ).FirstOrDefault();
     }
 }

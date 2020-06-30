@@ -23,6 +23,7 @@ namespace FamilyTreeXML.App
 
             while(true)
             {
+                Console.WriteLine("FamilyTreeXML");
                 Console.WriteLine("--- OPTIONS ---");
                 Console.WriteLine("1 - Browse all families");
                 Console.WriteLine("2 - Get family with id");
@@ -55,26 +56,58 @@ namespace FamilyTreeXML.App
                         Console.WriteLine(xdoc.ToString());                     
                         break;
                     case '3':
-                        var ids = FamilyTreeService.GetFamilyIds();
-                        Console.WriteLine("Insert father family id: ");
-                        var fatherFamilyId = Convert.ToInt32(Console.ReadLine());
-                        if (!ids.Contains(fatherFamilyId))
+                        Person father;
+                        Person mother;
+                        XDocument fatherFamily;
+                        XDocument motherFamily;
+
+                        Family newFamily = new Family();
+
+                        Console.WriteLine("Is father family arleady in DB? (Y/N)");
+                        choice = Console.ReadLine()[0];
+                        if(choice == 'n')
                         {
-                            Console.WriteLine("No family with given id.");
-                            break;
+                            father = InputUtilities.GetPersonData(Role.Father);
+                            newFamily.FatherFamilyId = -1;
+                            newFamily.Father = InputUtilities.PersonToXElement(father);
                         }
-                        Console.WriteLine("Insert mother family id: ");
-                        var motherFamilyId = Convert.ToInt32(Console.ReadLine());
-                        if(!ids.Contains(motherFamilyId))
+                        else if(choice == 'y')
                         {
-                            Console.WriteLine("No family with given id.");
-                            break;
+                            var ids = FamilyTreeService.GetFamilyIds();
+                            Console.WriteLine("Insert father family id.");
+                            var fatherFamilyId = Convert.ToInt32(Console.ReadLine());
+                            if (!ids.Contains(fatherFamilyId))
+                            {
+                                Console.WriteLine("No family with given id.");
+                                break;
+                            }
+                            fatherFamily = FamilyTreeService.Get(fatherFamilyId);
+                            newFamily.Father = InputUtilities.GetParentDataFromXDoc(fatherFamily, Role.Father);
                         }
 
-                        XDocument fatherFamily = FamilyTreeService.Get(fatherFamilyId);
-                        XDocument motherFamily = FamilyTreeService.Get(motherFamilyId);
-                        var newFamily = InputUtilities.GetNewFamilyData(fatherFamily, motherFamily);
+                        Console.WriteLine("Is mother family arleady in DB? (Y/N)");
+                        choice = Console.ReadLine()[0];
+                        if (choice == 'n')
+                        {
+                            mother = InputUtilities.GetPersonData(Role.Mother);
+                            newFamily.MotherFamilyId = -1;
+                            newFamily.Mother = InputUtilities.PersonToXElement(mother);
+                        }
+                        else if (choice == 'y')
+                        {
+                            var ids = FamilyTreeService.GetFamilyIds();
+                            Console.WriteLine("Insert mother family id.");
+                            var motherFamilyId = Convert.ToInt32(Console.ReadLine());
+                            if (!ids.Contains(motherFamilyId))
+                            {
+                                Console.WriteLine("No family with given id.");
+                                break;
+                            }
+                            motherFamily = FamilyTreeService.Get(motherFamilyId);
+                            newFamily.Mother = InputUtilities.GetParentDataFromXDoc(motherFamily, Role.Mother);
+                        }
 
+                        
                         FamilyTreeService.AddFamily(newFamily);
 
                         break;
@@ -86,7 +119,16 @@ namespace FamilyTreeXML.App
                             Console.WriteLine("No family with given id.");
                             break;
                         }
-                        var child = InputUtilities.GetChildData();
+                        while (true)
+                        {
+                            Console.WriteLine("Son or daughter? (S/D): ");
+                            choice = Char.ToLower(Console.ReadLine()[0]);
+                            if (choice == 's' || choice == 'd')
+                                break;
+                            Console.WriteLine("Please, type S/D.");
+                        }
+                        var role = choice == 's' ? Role.Son : Role.Daughter;
+                        var child = InputUtilities.GetPersonData(role);
                         FamilyTreeService.AddChild(id, child);
                         break;
                     case '8':
@@ -99,13 +141,7 @@ namespace FamilyTreeXML.App
                         }
                         break;
                     case '9':
-                        Console.WriteLine("Insert id:");
-                        int id3 = Convert.ToInt32(Console.ReadLine());
-                        int rowsAffected = FamilyTreeService.Delete(id3);
-                        if (rowsAffected == 0)
-                        {
-                            Console.WriteLine("No tree with given id.");
-                        }
+                        FamilyTreeService.DeleteAll();
                         break;
 
                 }

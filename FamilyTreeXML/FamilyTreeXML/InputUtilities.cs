@@ -9,26 +9,17 @@ namespace FamilyTreeXML.App
 {
     public static class InputUtilities
     {
-        public static Person GetChildData()
+        public static Person GetPersonData(Role role)
         {
-            char gender;
+            char choice;
             string firstname;
             string lastname;
             DateTime birthDate;
 
-            while(true)
-            {
-                Console.WriteLine("Child gender (Type M/F): ");
-                gender = Char.ToLower(Console.ReadLine()[0]);
-                if (gender == 'm' || gender == 'f')
-                    break;
-                Console.WriteLine("Please, type M/F.");
-            }
-
-            Console.WriteLine("Child firstame: ");
+            Console.WriteLine("Firstame: ");
             firstname = Console.ReadLine();
 
-            Console.WriteLine("Child lastname: ");
+            Console.WriteLine("Lastname: ");
             lastname = Console.ReadLine();
 
             Console.Write("Enter a year of birth: ");
@@ -45,40 +36,53 @@ namespace FamilyTreeXML.App
                 Firstname = firstname,
                 Lastname = lastname,
                 BirthDate = birthDate,
-                Role = gender == 'm' ? Role.Son : Role.Daughter
+                Role = role
             };
 
         }
 
-        public static Family GetNewFamilyData(XDocument fatherFamily, XDocument motherFamily)
+        public static XElement GetParentDataFromXDoc(XDocument xdoc, Role role)
         {
-            var family = new Family();
+            var parent = new XElement("Init");
+            int parentId = -1;
 
-            // Get father
-            var sons = fatherFamily.Root.Element("Family").Elements("Son").ToList();
-            Console.WriteLine($"Choose father(type number)");
-
-            for (var i = 0; i < sons.Count; i++)
+            if(role == Role.Father)
             {
-                Console.WriteLine($"{i + 1} - {sons[i].Value}");
-            }
-            var fatherId = int.Parse(Console.ReadLine());
+                var sons = xdoc.Root.Element("Family").Elements("Son").ToList();
+                Console.WriteLine($"Choose father(type number)");
 
-            // Get mother      
-            var daughters = motherFamily.Root.Element("Family").Elements("Daughter").ToList();
-            Console.WriteLine("Choose mother(type number)");
-            for (var i = 0; i < daughters.Count; i++)
+                for (var i = 0; i < sons.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1} - {sons[i].Value}");
+                }
+                parentId = int.Parse(Console.ReadLine());
+                parent = sons[parentId - 1];
+            }
+
+            else if(role == Role.Mother)
             {
-                Console.WriteLine($"{i + 1} - {daughters[i].Value}");
+                var daughters = xdoc.Root.Element("Family").Elements("Daughter").ToList();
+                Console.WriteLine("Choose mother(type number)");
+                for (var i = 0; i < daughters.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1} - {daughters[i].Value}");
+                }
+                parentId = int.Parse(Console.ReadLine());
+                parent = daughters[parentId - 1];
             }
-            var motherId = int.Parse(Console.ReadLine());
 
-            family.FatherFamilyId = int.Parse(fatherFamily.Root.Element("Family").Attribute("Id").Value);
-            family.MotherFamilyId = int.Parse(motherFamily.Root.Element("Family").Attribute("Id").Value);
-            family.Mother = daughters[motherId - 1];
-            family.Father = sons[fatherId - 1];
+            return parent;
+        }
 
-            return family;
+        internal static XElement PersonToXElement(Person person)
+        {
+            XElement xelem = new XElement(person.Role.ToString(),
+                new XElement("Firstname", person.Firstname),
+                new XElement("Lastname", person.Lastname),
+                new XElement("BirthDate", person.BirthDate.ToString(@"yyyy-MM-dd"))
+            );
+
+            return xelem;
         }
     }
 }

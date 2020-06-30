@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Tree>
+  <Family Id="1" fatherFamilyId="0" motherFamilyId="0">
+    <Father>
+      <Firstame>Grandpa</Firstame>
+      <Lastname>James</Lastname>
+      <BirthDate>1950-01-21</BirthDate>
+    </Father>
+    <Mother>
+      <Firstame>Granny</Firstame>
+      <Lastname>James</Lastname>
+      <Maidenname>Wade</Maidenname>
+      <BirthDate>1955-09-12</BirthDate>
+    </Mother>
+    <Son>
+      <Firstame>Lebron</Firstame>
+      <Lastname>James</Lastname>
+      <BirthDate>1980-01-21</BirthDate>
+    </Son>
+  </Family>
+</Tree>

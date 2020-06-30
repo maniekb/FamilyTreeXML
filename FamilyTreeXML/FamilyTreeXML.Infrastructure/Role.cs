@@ -6,8 +6,6 @@ namespace FamilyTreeXML.Infrastructure
 {
     public enum Role
     {
-        Grandfather,
-        Grandmother,
         Father,
         Mother,
         Son,

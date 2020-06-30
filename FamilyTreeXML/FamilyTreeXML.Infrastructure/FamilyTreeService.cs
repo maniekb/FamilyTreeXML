@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
 
@@ -131,9 +129,7 @@ namespace FamilyTreeXML.Infrastructure
         public void AddFamily(Family newFamily)
         {
             var id = HelperClass.GetSmallestPossibleId(GetFamilyIds());
-            var family = HelperClass.CreateFamily(newFamily, id); 
-
-            var xdoc = new XDocument(new XElement("Tree", family.Root));
+            var xdoc = HelperClass.CreateFamily(newFamily, id); 
 
             String query = $"INSERT INTO FamilyTreeX.dbo.FamilyTrees VALUES({id},'{xdoc.ToString()}');";
 
