@@ -12,7 +12,6 @@ namespace FamilyTreeXML.Tests
     public class FamilyTreeServiceTests
     {
         private readonly IFamilyTreeService FamilyTreeService = new FamilyTreeService("Data Source=DESKTOP-M13QDOP;Initial Catalog=FamilyTreeX;Integrated Security=True");
-        string file = "C:\\Users\\Maciek\\Desktop\\.NET\\FamilyTreeXML\\FamilyTreeXML\\FamilyTreeXML.Tests\\TestData_1.xml";
 
         [Fact]
         public void no_ids_should_be_return_from_empty_db()
@@ -27,8 +26,7 @@ namespace FamilyTreeXML.Tests
         public void one_id_should_be_return_from_db_with_one_family()
         {
             FamilyTreeService.DeleteAll();
-            //var family = LoadFamilyFromFile("TestData_1.xml");
-            var family = LoadFamilyFromFile(file);
+            var family = LoadFamilyFromFile("TestData_1.xml");
 
             FamilyTreeService.AddFamily(family);
             var ids = FamilyTreeService.GetFamilyIds();
@@ -49,8 +47,7 @@ namespace FamilyTreeXML.Tests
         public void one_xdoc_should_be_return_from_db_with_one_family()
         {
             FamilyTreeService.DeleteAll();
-            //var family = LoadFamilyFromFile("TestData_1.xml");
-            var family = LoadFamilyFromFile(file);
+            var family = LoadFamilyFromFile("TestData_1.xml");
 
             FamilyTreeService.AddFamily(family);
             var xdocs = FamilyTreeService.Browse();
@@ -61,8 +58,7 @@ namespace FamilyTreeXML.Tests
         [Fact]
         public void recieved_family_should_be_the_same_as_saved_get()
         {
-            //var family = LoadFamilyFromFile("TestData_1.xml");
-            var family = LoadFamilyFromFile(file);
+            var family = LoadFamilyFromFile("TestData_1.xml");
             FamilyTreeService.DeleteAll();
 
             FamilyTreeService.AddFamily(family);
@@ -75,8 +71,7 @@ namespace FamilyTreeXML.Tests
         [Fact]
         public void recieved_family_should_be_the_same_as_saved_browse()
         {
-            //var family = LoadFamilyFromFile("TestData_1.xml");
-            var family = LoadFamilyFromFile(file);
+            var family = LoadFamilyFromFile("TestData_1.xml");
             FamilyTreeService.DeleteAll();
 
             FamilyTreeService.AddFamily(family);
@@ -90,8 +85,7 @@ namespace FamilyTreeXML.Tests
         [InlineData(Role.Son)]
         public void adding_child_to_family_should_add_child_to_family_in_db(Role role)
         {
-            var family = LoadFamilyFromFile("C:\\Users\\Maciek\\Desktop\\.NET\\FamilyTreeXML\\FamilyTreeXML\\FamilyTreeXML.Tests\\TestData_3.xml");
-            //var family = LoadFamilyFromFile("TestData_1.xml");
+            var family = LoadFamilyFromFile("TestData_3.xml");
             FamilyTreeService.DeleteAll();
 
             var child = new Person
@@ -115,8 +109,7 @@ namespace FamilyTreeXML.Tests
         public void delete_should_remove_family_with_given_id_from_db()
         {
             FamilyTreeService.DeleteAll();
-            //var family = LoadFamilyFromFile("TestData_1.xml");
-            var family = LoadFamilyFromFile(file);
+            var family = LoadFamilyFromFile("TestData_1.xml");
 
             FamilyTreeService.AddFamily(family);
 
@@ -132,8 +125,7 @@ namespace FamilyTreeXML.Tests
         public void delete_all_should_remove_all_families_from_db()
         {
             FamilyTreeService.DeleteAll();
-            //var family = LoadFamilyFromFile("TestData_1.xml");
-            var family = LoadFamilyFromFile(file);
+            var family = LoadFamilyFromFile("TestData_1.xml");
 
             FamilyTreeService.AddFamily(family);
             FamilyTreeService.AddFamily(family);

@@ -33,6 +33,7 @@ namespace FamilyTreeXML.App
 6 - Get person birth date
 7 - Delete family with id
 8 - Delete all families
+9 - Get family tree (d'Aboville system)
 Q - QUIT
                 ");
 
@@ -94,6 +95,7 @@ Q - QUIT
                             }
                             fatherFamily = FamilyTreeService.Get(fatherFamilyId);
                             newFamily.Father = InputUtilities.GetParentDataFromXDoc(fatherFamily, Role.Father);
+                            newFamily.FatherFamilyId = fatherFamilyId;
                         }
                         else
                         {
@@ -121,6 +123,7 @@ Q - QUIT
                             }
                             motherFamily = FamilyTreeService.Get(motherFamilyId);
                             newFamily.Mother = InputUtilities.GetParentDataFromXDoc(motherFamily, Role.Mother);
+                            newFamily.MotherFamilyId = motherFamilyId;
                         }
                         else
                         {
@@ -187,6 +190,18 @@ Q - QUIT
                         break;
                     case '8':
                         FamilyTreeService.DeleteAll();
+                        break;
+                    case '9':
+                        var familyIds = FamilyTreeService.GetFamilyIds();
+                        Console.WriteLine("Insert family id.");
+                        var familyId = Convert.ToInt32(Console.ReadLine());
+                        if (!familyIds.Contains(familyId))
+                        {
+                            Console.WriteLine("No family with given id.");
+                            break;
+                        }
+                        var ftree = FamilyTreeService.GetFamilyTree(familyId);
+                        Console.WriteLine(ftree);
                         break;
                     case 'q':
                         Environment.Exit(0);
