@@ -185,7 +185,8 @@ Q - QUIT
                         int rowsAffected = FamilyTreeService.Delete(id3);
                         if (rowsAffected == 0)
                         {
-                            Console.WriteLine("No tree with given id.");
+                            Console.WriteLine("Deletion couldn't be proceeded. There is no family with given id or " +
+                                "id is referenced in another family XML document.");
                         }
                         break;
                     case '8':

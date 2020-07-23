@@ -91,6 +91,17 @@ namespace FamilyTreeXML.Infrastructure
 
         public int Delete(int familyId)
         {
+
+            foreach(var family in Browse())
+            {
+                if(family.Root.Element("Family").Attribute("fatherFamilyId").Value == familyId.ToString()
+                    || family.Root.Element("Family").Attribute("motherFamilyId").Value == familyId.ToString())
+                {
+                    return 0;
+                }
+            }
+
+
             String query = $"DELETE FROM FamilyTreeX.dbo.FamilyTrees WHERE id = {familyId};";
             int rowsAffected;
 
@@ -188,10 +199,10 @@ namespace FamilyTreeXML.Infrastructure
             return birthDate;
         }
 
-        public int GetFamilyIdByParentName(string firstname, string lastname)
+        public List<int> GetFamilyIdByParentName(string firstname, string lastname)
         {
             String query = $"SELECT Id from GetFamilyIdByParentName('{firstname}','{lastname}');";
-            int id = -1;
+            var ids = new List<int>();
 
             using (SqlConnection connection = new SqlConnection(ConnectionString))
             {
@@ -201,61 +212,74 @@ namespace FamilyTreeXML.Infrastructure
 
                 if (reader.HasRows)
                 {
-                    reader.Read();
-                    id = reader.GetInt32(0);
+                    while (reader.Read())
+                    {
+                        ids.Add(reader.GetInt32(0));
+                    }
                 }
 
                 reader.Close();
             }
 
-            return id;
+            return ids;
         }
 
         public string GetFamilyTree(int id)
         {
             StringBuilder tree = new StringBuilder();
-            var progenitors = Get(id);
+            var progenitors = Get(id).Root.Element("Family");
 
-            tree.Append($"1. {progenitors.Root.Element("Family").Element("Father").Element("Firstname").Value} " +
-                $"{progenitors.Root.Element("Family").Element("Father").Element("Lastname").Value} & " +
-                $"{ progenitors.Root.Element("Family").Element("Mother").Element("Firstname").Value} " +
-                $"{progenitors.Root.Element("Family").Element("Mother").Element("Lastname").Value}\n");
+            tree.Append($"1. {progenitors.Element("Father").Element("Firstname").Value} " +
+                $"{progenitors.Element("Father").Element("Lastname").Value} & " +
+                $"{ progenitors.Element("Mother").Element("Firstname").Value} " +
+                $"{progenitors.Element("Mother").Element("Lastname").Value}\n");
 
 
             var i = 1;
 
-            var childs = progenitors.Root.Element("Family").Elements("Son").ToList();
-            childs.AddRange(progenitors.Root.Element("Family").Elements("Daughter").ToList());
+            var childs = progenitors.Elements("Son").ToList();
+            childs.AddRange(progenitors.Elements("Daughter").ToList());
 
             foreach (var child in childs)
             {
                 tree.Append($"   1.{i.ToString()} {child.Element("Firstname").Value} {child.Element("Lastname").Value}\n");
 
-                var familyId = GetFamilyIdByParentName(child.Element("Firstname").Value, child.Element("Lastname").Value);
-                if (familyId == -1)
+                var familyIds = GetFamilyIdByParentName(child.Element("Firstname").Value, child.Element("Lastname").Value);
+                if (!familyIds.Any())
                     continue;
 
-                progenitors = Get(familyId);
+                var childs1 = GetDAbovilleChilds(familyIds);
                 var i1 = 1;
-                var childs1 = progenitors.Root.Element("Family").Elements("Son").ToList();
-                childs1.AddRange(progenitors.Root.Element("Family").Elements("Daughter").ToList());
 
                 foreach (var child1 in childs1)
                 {
-                    tree.Append($"      1.{i}.{i1} {child1.Element("Firstname").Value} {child1.Element("Lastname").Value}\n");
+                    if(familyIds.Count > 1)
+                    {
+                        tree.Append($"      1.{i}{child1.Marriage}.{i1}. {child1.Firstname} {child1.Lastname}\n");
+                    }
+                    else
+                    {
+                        tree.Append($"      1.{i}.{i1}. {child1.Firstname} {child1.Lastname}\n");
+                    }
 
-                    familyId = GetFamilyIdByParentName(child1.Element("Firstname").Value, child1.Element("Lastname").Value);
-                    if (familyId == -1)
+                    familyIds = GetFamilyIdByParentName(child1.Firstname, child1.Lastname);
+                    if (!familyIds.Any())
                         continue;
 
-                    progenitors = Get(familyId);
+                    var childs2 = GetDAbovilleChilds(familyIds);
+
                     var i2 = 1;
-                    var childs2 = progenitors.Root.Element("Family").Elements("Son").ToList();
-                    childs2.AddRange(progenitors.Root.Element("Family").Elements("Daughter").ToList());
 
                     foreach (var child2 in childs2)
                     {
-                        tree.Append($"        1.{i}.{i1}.{i2++} {child2.Element("Firstname").Value} {child2.Element("Lastname").Value}\n");
+                        if(familyIds.Count > 1)
+                        {
+                            tree.Append($"        1.{i}.{i1}{child2.Marriage}.{i2++}. {child2.Firstname} {child2.Lastname}\n");
+                        }
+                        else
+                        {
+                            tree.Append($"        1.{i}.{i1}.{i2++}. {child2.Firstname} {child2.Lastname}\n");
+                        }              
                     }
 
                     i1++;
@@ -266,6 +290,22 @@ namespace FamilyTreeXML.Infrastructure
 
 
             return tree.ToString();
+        }
+
+        public List<DAbovilleChild> GetDAbovilleChilds(List<int> familyIds)
+        {
+            var childs = new List<DAbovilleChild>();
+            char m = 'a';
+            foreach (var familyId in familyIds)
+            {
+                var progenitors = Get(familyId);
+                var data = progenitors.Root.Element("Family").Elements("Son").ToList();
+                data.AddRange(progenitors.Root.Element("Family").Elements("Daughter").ToList());
+                childs.AddRange(data.Select(x => new DAbovilleChild { Marriage = m, Firstname = x.Element("Firstname").Value, Lastname = x.Element("Lastname").Value }));
+                m++;
+            }
+
+            return childs;
         }
     }
 }

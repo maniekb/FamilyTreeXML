@@ -9,7 +9,7 @@ namespace FamilyTreeXML.Infrastructure
     public interface IFamilyTreeService
     {
         XDocument Get(int familyId);
-        int GetFamilyIdByParentName(string firstname, string lastname);
+        List<int> GetFamilyIdByParentName(string firstname, string lastname);
         int Delete(int familyId);
         List<XDocument> Browse();
         int AddChild(int familyId, Person child);
