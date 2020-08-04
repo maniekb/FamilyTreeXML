@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Tree>
-  <Family Id="2" fatherFamilyId="0" motherFamilyId="0">
+  <Family Id="1" fatherFamilyId="-1" motherFamilyId="-1">
     <Father>
       <Firstname>Grandpa</Firstname>
       <Lastname>Bryant</Lastname>

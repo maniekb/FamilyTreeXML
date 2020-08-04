@@ -242,7 +242,7 @@ namespace FamilyTreeXML.Infrastructure
 
             foreach (var child in childs)
             {
-                tree.Append($"   1.{i.ToString()} {child.Element("Firstname").Value} {child.Element("Lastname").Value}\n");
+                tree.Append($"   1.{i.ToString()}. {child.Element("Firstname").Value} {child.Element("Lastname").Value}\n");
 
                 var familyIds = GetFamilyIdByParentName(child.Element("Firstname").Value, child.Element("Lastname").Value);
                 if (!familyIds.Any())

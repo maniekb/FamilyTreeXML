@@ -137,14 +137,36 @@ namespace FamilyTreeXML.Tests
             Assert.True(!xdocs.Any());
         }
 
+        [Fact]
+        public void getfamilydaboville_should_return_correct_value()
+        {
+            FamilyTreeService.DeleteAll();
+            var family0 = LoadFamilyFromFile("TestData_1.xml");
+            var family1 = LoadFamilyFromFile("TestData_2.xml");
+            var family2 = LoadFamilyFromFile("TestData_3.xml");
+
+            FamilyTreeService.AddFamily(family0);
+            FamilyTreeService.AddChild(0, new Person { Role = Role.Son, Firstname = "Lebron", Lastname = "James" });
+            FamilyTreeService.AddFamily(family1);
+            FamilyTreeService.AddChild(1, new Person { Role = Role.Daughter, Firstname = "Savannah", Lastname = "Bryant" });
+            FamilyTreeService.AddFamily(family2);
+            FamilyTreeService.AddChild(2, new Person { Role = Role.Son, Firstname = "Dwyane", Lastname = "James" });
+
+            var expected = "1. Grandpa James & Granny James\n   1.1. Lebron James\n      1.1.1. Dwyane James\n";
+
+            var actual = FamilyTreeService.GetFamilyDAboville(0);
+
+            Assert.Equal(expected, actual);
+        }
+
         public Family LoadFamilyFromFile(string file)
         {
             var xdoc = XDocument.Load(file);
 
             var family = new Family
             {
-                FatherFamilyId = 0,
-                MotherFamilyId = 0,
+                FatherFamilyId = Int32.Parse(xdoc.Element("Tree").Element("Family").Attribute("fatherFamilyId").Value),
+                MotherFamilyId = Int32.Parse(xdoc.Element("Tree").Element("Family").Attribute("motherFamilyId").Value),
                 Father = xdoc.Descendants("Father").FirstOrDefault(),
                 Mother = xdoc.Descendants("Mother").FirstOrDefault()
             };
