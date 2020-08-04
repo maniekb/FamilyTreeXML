@@ -25,15 +25,15 @@ namespace FamilyTreeXML.App
                 Console.WriteLine(@"
     FamilyTreeXML
 ----- OPTIONS -----
-1 - Browse all families
-2 - Get family with id
-3 - Create new family
-4 - Add child to family
-5 - Get number of kids in every family
-6 - Get person birth date
-7 - Delete family with id
-8 - Delete all families
-9 - Get family tree (d'Aboville system)
+1 - Get family tree (d'Aboville system)
+2 - Browse all families
+3 - Get family with id
+4 - Create new family
+5 - Add child to family
+6 - Get number of kids in every family
+7 - Get person birth date
+8 - Delete family with id
+9 - Delete all families
 Q - QUIT
                 ");
 
@@ -43,6 +43,18 @@ Q - QUIT
                 switch (choice)
                 {
                     case '1':
+                        var familyIds = FamilyTreeService.GetFamilyIds();
+                        Console.WriteLine("Insert family id.");
+                        var familyId = Convert.ToInt32(Console.ReadLine());
+                        if (!familyIds.Contains(familyId))
+                        {
+                            Console.WriteLine("No family with given id.");
+                            break;
+                        }
+                        var ftree = FamilyTreeService.GetFamilyDAboville(familyId);
+                        Console.WriteLine(ftree);
+                        break;
+                    case '2':
                         var trees = FamilyTreeService.Browse();
                         if(trees.Any())
                         {
@@ -56,7 +68,7 @@ Q - QUIT
                             Console.WriteLine("No trees in the database.");
                         }
                         break;
-                    case '2':
+                    case '3':
                         Console.WriteLine("Insert id:");
                         id = Convert.ToInt32(Console.ReadLine());
                         xdoc = FamilyTreeService.Get(id);
@@ -67,7 +79,7 @@ Q - QUIT
                         }
                         Console.WriteLine(xdoc.ToString());                     
                         break;
-                    case '3':
+                    case '4':
                         Person father;
                         Person mother;
                         XDocument fatherFamily;
@@ -135,7 +147,7 @@ Q - QUIT
                         FamilyTreeService.AddFamily(newFamily);
 
                         break;
-                    case '4':
+                    case '5':
                         Console.WriteLine("Insert family id:");                
                         id = Convert.ToInt32(Console.ReadLine());
                         if(!FamilyTreeService.GetFamilyIds().Contains(id))
@@ -155,14 +167,14 @@ Q - QUIT
                         var child = InputUtilities.GetPersonData(role);
                         FamilyTreeService.AddChild(id, child);
                         break;
-                    case '5':
+                    case '6':
                         var data = FamilyTreeService.ChildInEveryFamilyCount();
                         foreach(var row in data)
                         {
                             Console.WriteLine($"Family with id {row.Item1}: {row.Item2}");
                         }
                         break;
-                    case '6':
+                    case '7':
                         Console.WriteLine("Firstame: ");
                         var firstname = Console.ReadLine();
                         Console.WriteLine("Lastname: ");
@@ -179,7 +191,7 @@ Q - QUIT
                         }
 
                         break;
-                    case '7':
+                    case '8':
                         Console.WriteLine("Insert id:");
                         int id3 = Convert.ToInt32(Console.ReadLine());
                         int rowsAffected = FamilyTreeService.Delete(id3);
@@ -189,20 +201,8 @@ Q - QUIT
                                 "id is referenced in another family XML document.");
                         }
                         break;
-                    case '8':
-                        FamilyTreeService.DeleteAll();
-                        break;
                     case '9':
-                        var familyIds = FamilyTreeService.GetFamilyIds();
-                        Console.WriteLine("Insert family id.");
-                        var familyId = Convert.ToInt32(Console.ReadLine());
-                        if (!familyIds.Contains(familyId))
-                        {
-                            Console.WriteLine("No family with given id.");
-                            break;
-                        }
-                        var ftree = FamilyTreeService.GetFamilyTree(familyId);
-                        Console.WriteLine(ftree);
+                        FamilyTreeService.DeleteAll();
                         break;
                     case 'q':
                         Environment.Exit(0);

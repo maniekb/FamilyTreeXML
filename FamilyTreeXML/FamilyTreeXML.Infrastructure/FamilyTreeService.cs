@@ -224,7 +224,7 @@ namespace FamilyTreeXML.Infrastructure
             return ids;
         }
 
-        public string GetFamilyTree(int id)
+        public string GetFamilyDAboville(int id)
         {
             StringBuilder tree = new StringBuilder();
             var progenitors = Get(id).Root.Element("Family");

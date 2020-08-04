@@ -17,7 +17,7 @@ namespace FamilyTreeXML.Infrastructure
         void AddFamily(Family newFamily);
         List<Tuple<int, int>> ChildInEveryFamilyCount();
         string GetPersonBirthDate(string firstname, string lastname);
-        string GetFamilyTree(int familyId);
+        string GetFamilyDAboville(int familyId);
         void DeleteAll();
     }
 }
