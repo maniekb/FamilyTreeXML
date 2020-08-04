@@ -244,35 +244,35 @@ namespace FamilyTreeXML.Infrastructure
             {
                 tree.Append($"   1.{i.ToString()}. {child.Element("Firstname").Value} {child.Element("Lastname").Value}\n");
 
-                var familyIds = GetFamilyIdByParentName(child.Element("Firstname").Value, child.Element("Lastname").Value);
-                if (!familyIds.Any())
+                var familyIds1 = GetFamilyIdByParentName(child.Element("Firstname").Value, child.Element("Lastname").Value);
+                if (!familyIds1.Any())
                     continue;
 
-                var childs1 = GetDAbovilleChilds(familyIds);
+                var childs1 = GetDAbovilleChilds(familyIds1);
                 var i1 = 1;
 
                 foreach (var child1 in childs1)
                 {
-                    if(familyIds.Count > 1)
+                    if(familyIds1.Count > 1)
                     {
-                        tree.Append($"      1.{i}{child1.Marriage}.{i1}. {child1.Firstname} {child1.Lastname}\n");
+                        tree.Append($"      1.{i}{child1.Marriage}.{i1++}. {child1.Firstname} {child1.Lastname}\n");
                     }
                     else
                     {
-                        tree.Append($"      1.{i}.{i1}. {child1.Firstname} {child1.Lastname}\n");
+                        tree.Append($"      1.{i}.{i1++}. {child1.Firstname} {child1.Lastname}\n");
                     }
 
-                    familyIds = GetFamilyIdByParentName(child1.Firstname, child1.Lastname);
-                    if (!familyIds.Any())
+                    var familyIds2 = GetFamilyIdByParentName(child1.Firstname, child1.Lastname);
+                    if (!familyIds2.Any())
                         continue;
 
-                    var childs2 = GetDAbovilleChilds(familyIds);
+                    var childs2 = GetDAbovilleChilds(familyIds2);
 
                     var i2 = 1;
 
                     foreach (var child2 in childs2)
                     {
-                        if(familyIds.Count > 1)
+                        if(familyIds2.Count > 1)
                         {
                             tree.Append($"        1.{i}.{i1}{child2.Marriage}.{i2++}. {child2.Firstname} {child2.Lastname}\n");
                         }

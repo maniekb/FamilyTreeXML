@@ -1,3 +1,10 @@
+USE [FamilyTreeX]
+GO
+/****** Object:  UserDefinedFunction [dbo].[GetPersonBirthDate]    Script Date: 30.06.2020 20:18:32 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
 CREATE FUNCTION [dbo].[GetFamilyIdByParentName] (
 	@firstname VARCHAR(50),
 	@lastname VARCHAR(50)
